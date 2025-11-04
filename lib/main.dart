@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ).copyWith(secondary: Colors.blueAccent[400]),
       ),
-      home: MyHomePage(), // removed const and title parameter
+      home: MyHomePage(), 
     );
   }
 }
