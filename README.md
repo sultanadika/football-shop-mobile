@@ -47,3 +47,17 @@ MaterialApp is responsible for:
 - Handling localization and configuration
 
 It is used as the root widget because many Flutter widgets (like Scaffold, AppBar, and SnackBar) require a Material Design context provided by MaterialApp.
+
+## Explain the difference between StatelessWidget and StatefulWidget. When would you choose one over the other?
+
+Differences between StatelessWidget and StatefulWidget:
+
+StatelessWidget	                                                       StatefulWidget
+Does not hold changing state.	                          Holds state that can change during runtime.
+UI does not update automatically after being built.	      UI updates when state changes (using setState).
+Used for static screens/UI elements.	                  Used for interactive or dynamic content.
+
+Use cases:
+
+StatelessWidget → static UI pages, simple buttons, labels
+StatefulWidget → forms, animations, user input, data that changes
