@@ -1,16 +1,19 @@
-# football_shop
+# Assignment 7
 
-A new Flutter project.
+## Explain what a widget tree is in Flutter and how parent-child relationships work between widgets.
 
-## Getting Started
+A widget tree is a hierarchical structure that represents how widgets are organized in a Flutter application. Every widget exists inside this tree and has a parent-child relationship.
 
-This project is a starting point for a Flutter application.
+Parent widget: wraps and controls layout or behavior of its children.
 
-A few resources to get you started if this is your first Flutter project:
+Child widget: exists inside a parent and follows the structure defined by the parent.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Example in this project:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Scaffold → parent of AppBar and body
+
+Column → parent of Row, Text, and GridView
+
+Flutter builds UI based on this hierarchical widget tree structure.
+
+## Explain what a widget tree is in Flutter and how parent-child relationships work between widgets.
