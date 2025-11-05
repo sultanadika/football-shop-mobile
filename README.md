@@ -33,3 +33,17 @@ Flutter builds UI based on this hierarchical widget tree structure.
 13. InkWell = Makes widgets clickable with ripple effect.
 14. SnackBar = Shows a temporary notification message at the bottom of the screen.
 15. MediaQuery = Accesses device screen size for responsive layout
+
+## What is the function of the MaterialApp widget? Explain why this widget is often used as the root widget.
+
+MaterialApp is responsible for:
+
+- Defining the app's theme and color scheme
+
+- Managing navigation between screens
+
+- Applying Material Design components
+
+- Handling localization and configuration
+
+It is used as the root widget because many Flutter widgets (like Scaffold, AppBar, and SnackBar) require a Material Design context provided by MaterialApp.
