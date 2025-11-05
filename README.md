@@ -10,9 +10,9 @@ Child widget: exists inside a parent and follows the structure defined by the pa
 
 Example in this project:
 
-Scaffold → parent of AppBar and body
+- Scaffold which is parent of AppBar and body
 
-Column → parent of Row, Text, and GridView
+- Column which is parent of Row, Text, and GridView
 
 Flutter builds UI based on this hierarchical widget tree structure.
 
@@ -64,5 +64,28 @@ StatefulWidget
 
 Use cases:
 
-StatelessWidget → static UI pages, simple buttons, labels
+StatelessWidget → static UI pages, simple buttons, labels, 
 StatefulWidget → forms, animations, user input, data that changes
+
+
+## What is BuildContext and why is it important in Flutter? How is it used in the build method?
+
+BuildContext is an object that gives information about the location of a widget in the widget tree.
+
+It is important because it allows widgets to:
+
+- Access theme and styling 
+
+- Access message handlers 
+
+- Navigate between screens 
+
+- Find parent widgets and shared data in the tree
+
+Inside the build() method, context helps widgets build UI according to their position in the tree.
+
+##  Explain the concept of a “hot reload” in Flutter and how it differs from a “hot restart”.
+
+Hot reload lets you apply code changes instantly without restarting the app. It keeps the current state, so things like typed text or the current screen stay as they are. This is useful when you're adjusting UI or making small changes during development.
+
+Hot restart fully restarts the app from the beginning. It clears all state and re-loads the entire application, which is necessary when your changes affect the app’s initial setup or logic.
