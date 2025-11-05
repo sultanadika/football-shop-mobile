@@ -52,10 +52,15 @@ It is used as the root widget because many Flutter widgets (like Scaffold, AppBa
 
 Differences between StatelessWidget and StatefulWidget:
 
-StatelessWidget	                                                       StatefulWidget
-Does not hold changing state.	                          Holds state that can change during runtime.
-UI does not update automatically after being built.	      UI updates when state changes (using setState).
-Used for static screens/UI elements.	                  Used for interactive or dynamic content.
+StatelessWidget	                                                       
+- Does not hold changing state.	                          
+- UI does not update automatically after being built.	      
+- Used for static screens/UI elements.	                  
+
+StatefulWidget
+- Holds state that can change during runtime.
+- UI updates when state changes (using setState).
+- Used for interactive or dynamic content.
 
 Use cases:
 
