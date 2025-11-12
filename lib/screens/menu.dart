@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import '../widgets/left_drawer.dart';
+import 'add_newitem.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
-  final String nama = "Sultanadika Shidqi M"; 
-  final String npm = "2406365326"; 
-  final String kelas = "KKI"; 
+  final String nama = "Sultanadika Shidqi M";
+  final String npm = "2406365326";
+  final String kelas = "KKI";
 
-  //  list of ItemHomepage
+  // List of ItemHomepage
   final List<ItemHomepage> items = [
     ItemHomepage("All Products", Icons.list, Colors.blue),
     ItemHomepage("My Products", Icons.person, Colors.green),
-    ItemHomepage("Create Product", Icons.add, Colors.red),
+    ItemHomepage("Add Product", Icons.add, Colors.red),
   ];
 
   @override
@@ -24,6 +26,7 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      drawer: const LeftDrawer(), // Drawer widget
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -81,7 +84,6 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Integrating InfoCard and ItemCard to Display on myHomepage
     return Card(
       elevation: 2.0,
       child: Container(
@@ -99,7 +101,7 @@ class InfoCard extends StatelessWidget {
   }
 }
 
-//  Creating ItemHomepage class
+// Creating ItemHomepage class
 class ItemHomepage {
   final String name;
   final IconData icon;
@@ -120,20 +122,38 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
+          if (item.name == "Add Product") {
+            // Show snackbar first
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text("You have pressed the Add Product button"),
+                  duration: Duration(milliseconds: 800),
+                ),
+              );
+
+            // Navigate after short Delay
+            Future.delayed(const Duration(milliseconds: 800), () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AddNewItemPage()),
+              );
+            });
+            return;
+          }
+
+          // Other button messages
           String msg = "";
           if (item.name == "All Products") {
             msg = "You have pressed the All Products button";
           } else if (item.name == "My Products") {
             msg = "You have pressed the My Products button";
-          } else if (item.name == "Create Product") {
-            msg = "You have pressed the Create Product button";
           }
 
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text(msg)),
-            );
+            ..showSnackBar(SnackBar(content: Text(msg)));
         },
         child: Container(
           padding: const EdgeInsets.all(8),
