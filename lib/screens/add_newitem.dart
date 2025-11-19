@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:football_shop/screens/menu.dart';
 
 class AddNewItemPage extends StatefulWidget {
   const AddNewItemPage({super.key});
@@ -11,190 +15,248 @@ class AddNewItemPage extends StatefulWidget {
 class _AddNewItemPageState extends State<AddNewItemPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _descController = TextEditingController();
-  final _thumbnailController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _brandController = TextEditingController();
-  final _stockController = TextEditingController();
+  String _name = "";
+  String _description = "";
+  String _thumbnail = "";
+  String _category = "Ball";
+  String _brand = "";
+  String _stock = "";
+  String _price = "";
 
-  String _selectedCategory = 'Ball';
-  bool _isFeatured = false;
-  double _rating = 0;
-
-  final List<String> _categories = ['Ball', 'Boots', 'Shirt', 'Shorts', 'Accessories'];
+  final List<String> _categories = [
+    'Ball',
+    'Boots',
+    'Shirt',
+    'Shorts',
+    'Accessories'
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Add New Product")),
+      appBar: AppBar(
+        title: const Center(child: Text('Add Product Form')),
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+      ),
       drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            //  Name
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: "Item Name"),
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Name cannot be empty";
-                if (value.length > 120) return "Max 120 characters";
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              // === Product Name ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Product Name",
+                    labelText: "Product Name",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _name = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Product name cannot be empty!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
 
-            //  Description
-            TextFormField(
-              controller: _descController,
-              decoration: const InputDecoration(labelText: "Item Description"),
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Description cannot be empty";
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              // === Description ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: "Product Description",
+                    labelText: "Product Description",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _description = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Description cannot be empty!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
 
-            //  Thumbnail URL
-            TextFormField(
-              controller: _thumbnailController,
-              decoration: const InputDecoration(labelText: "Image URL"),
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Image URL cannot be empty";
-                if (!Uri.parse(value).isAbsolute) return "Enter a valid URL";
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            //  Price
-            TextFormField(
-              controller: _priceController,
-              decoration: const InputDecoration(labelText: "Price (Rp)"),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Price cannot be empty";
-                final price = int.tryParse(value);
-                if (price == null) return "Must be a number";
-                if (price < 0) return "Cannot be negative";
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            //  Category Dropdown
-            DropdownButtonFormField<String>(
-              value: _selectedCategory,
-              decoration: const InputDecoration(labelText: "Category"),
-              items: _categories.map((String category) {
-                return DropdownMenuItem(value: category, child: Text(category));
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategory = value!;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-
-            //  Featured Switch
-            SwitchListTile(
-              title: const Text("Featured Item?"),
-              value: _isFeatured,
-              onChanged: (value) {
-                setState(() => _isFeatured = value);
-              },
-            ),
-            const SizedBox(height: 16),
-
-            //  Rating Slider
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Rating (0–10)"),
-                Slider(
-                  value: _rating,
-                  min: 0,
-                  max: 10,
-                  divisions: 10,
-                  label: _rating.round().toString(),
+              // === Category ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: "Category",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  value: _category,
+                  items: _categories
+                      .map((cat) => DropdownMenuItem(
+                            value: cat,
+                            child: Text(cat),
+                          ))
+                      .toList(),
                   onChanged: (value) {
                     setState(() {
-                      _rating = value;
+                      _category = value!;
                     });
                   },
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
+              ),
 
-            // 🏭 Brand
-            TextFormField(
-              controller: _brandController,
-              decoration: const InputDecoration(labelText: "Brand (optional)"),
-            ),
-            const SizedBox(height: 16),
+              // === Thumbnail URL ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Thumbnail URL (optional)",
+                    labelText: "Thumbnail URL",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _thumbnail = value),
+                ),
+              ),
 
-            //  Stock
-            TextFormField(
-              controller: _stockController,
-              decoration: const InputDecoration(labelText: "Available Stock"),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) return "Stock cannot be empty";
-                final stock = int.tryParse(value);
-                if (stock == null) return "Must be a number";
-                if (stock < 0) return "Cannot be negative";
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              // === Price ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Price (Rp)",
+                    labelText: "Price",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _price = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Price cannot be empty!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Price must be a number!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
 
-            // Save button
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _showDialog(context);
-                }
-              },
-              child: const Text("Save Product"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+              // === Brand (optional) ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Brand (optional)",
+                    labelText: "Brand",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _brand = value),
+                ),
+              ),
 
-  void _showDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("New Product Added"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Name: ${_nameController.text}"),
-            Text("Description: ${_descController.text}"),
-            Text("Thumbnail: ${_thumbnailController.text}"),
-            Text("Price: ${_priceController.text}"),
-            Text("Category: $_selectedCategory"),
-            Text("Featured: ${_isFeatured ? 'Yes' : 'No'}"),
-            Text("Rating: ${_rating.round()}"),
-            Text("Brand: ${_brandController.text.isEmpty ? '-' : _brandController.text}"),
-            Text("Stock: ${_stockController.text}"),
-          ],
-        ),
-        actions: [
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () => Navigator.pop(context),
+              // === Stock ===
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Available Stock",
+                    labelText: "Stock",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _stock = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Stock cannot be empty!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Stock must be a number!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
+              // === Save Button ===
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.indigo),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+
+                        final response = await request.postJson(
+                          "http://localhost:8000/create-flutter/",
+                          jsonEncode({
+                            "name": _name,
+                            "description": _description,
+                            "thumbnail": _thumbnail,
+                            "category": _category,
+                            "price": int.parse(_price),
+                            "brand": _brand,
+                            "stock": int.parse(_stock),
+                          }),
+                        );
+
+                        if (!context.mounted) return;
+
+                        if (response['status'] == 'success') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Product successfully saved!"),
+                            ),
+                          );
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyHomePage(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Something went wrong, please try again."),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

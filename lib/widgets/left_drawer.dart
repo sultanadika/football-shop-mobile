@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/menu.dart';
 import '../screens/add_newitem.dart';
+import 'package:football_shop/screens/product_entry_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -25,7 +26,7 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
 
-          // 🏠 HOME option
+          
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text("Home"),
@@ -39,7 +40,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
 
-          // ➕ ADD PRODUCT option
+          
           ListTile(
             leading: const Icon(Icons.add_box),
             title: const Text("Add Product"),
@@ -48,6 +49,20 @@ class LeftDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AddNewItemPage(),
+                ),
+              );
+            },
+          ),
+
+          // 📦 Product List (FOLLOWING YOUR NEWS LIST EXAMPLE)
+          ListTile(
+            leading: const Icon(Icons.list_alt),
+            title: const Text('Product List'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductEntryListPage(),
                 ),
               );
             },

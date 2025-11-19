@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/left_drawer.dart';
 import 'add_newitem.dart';
+import 'product_entry_list.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -9,7 +10,6 @@ class MyHomePage extends StatelessWidget {
   final String npm = "2406365326";
   final String kelas = "KKI";
 
-  // List of ItemHomepage
   final List<ItemHomepage> items = [
     ItemHomepage("All Products", Icons.list, Colors.blue),
     ItemHomepage("My Products", Icons.person, Colors.green),
@@ -26,7 +26,7 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      drawer: const LeftDrawer(), // Drawer widget
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -75,7 +75,6 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-// Creating InfoCard widget
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
@@ -101,7 +100,6 @@ class InfoCard extends StatelessWidget {
   }
 }
 
-// Creating ItemHomepage class
 class ItemHomepage {
   final String name;
   final IconData icon;
@@ -122,8 +120,9 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
+
+          // === ADD PRODUCT ===
           if (item.name == "Add Product") {
-            // Show snackbar first
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
@@ -133,7 +132,6 @@ class ItemCard extends StatelessWidget {
                 ),
               );
 
-            // Navigate after short Delay
             Future.delayed(const Duration(milliseconds: 800), () {
               Navigator.push(
                 context,
@@ -143,17 +141,32 @@ class ItemCard extends StatelessWidget {
             return;
           }
 
-          // Other button messages
-          String msg = "";
+          // === ALL PRODUCTS ===
           if (item.name == "All Products") {
-            msg = "You have pressed the All Products button";
-          } else if (item.name == "My Products") {
-            msg = "You have pressed the My Products button";
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProductEntryListPage(
+                  showOnlyMine: false,   
+                ),
+              ),
+            );
+            return;
           }
 
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(msg)));
+          // === MY PRODUCTS ===
+          if (item.name == "My Products") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProductEntryListPage(
+                  showOnlyMine: true,    
+                ),
+              ),
+            );
+            return;
+          }
+
         },
         child: Container(
           padding: const EdgeInsets.all(8),
